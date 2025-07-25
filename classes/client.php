@@ -315,6 +315,8 @@ class client {
         $userdata = \profile_user_record($user->id);
         if (isset($userdata->OID) && $userdata->OID)
             $data['esia_oid'] =  $userdata->OID;
+        if (isset($userdata->hash_snils) && $userdata->hash_snils)
+            $data['hash_snils'] =  $userdata->hash_snils; 
 
         return [
             'biometricIdentification' => $data,
