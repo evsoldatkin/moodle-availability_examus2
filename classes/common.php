@@ -333,13 +333,15 @@ class common {
     }
 
     public static function get_default_proctoring_settings() {
-        $json = get_config('availability_examus2', 'default_proctoring_settings');
-        $json = empty($json) ? '{}' : $json;
-        return json_decode($json);
+        $json = \get_config('availability_examus2', 'default_proctoring_settings');
+        $json = json_decode($json);
+        if (!($json instanceof stdClass))
+            $json = new stdClass();
+        return $json;
     }
 
     public static function set_default_proctoring_settings($data){
         $json = json_encode($data);
-        set_config('default_proctoring_settings', $json, 'availability_examus2');
+        \set_config('default_proctoring_settings', $json, 'availability_examus2');
     }
 }
