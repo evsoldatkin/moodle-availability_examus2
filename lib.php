@@ -56,12 +56,10 @@ function availability_examus2_before_standard_html_head() {
  * This hook is used for exams that require scheduling.
  **/
 function availability_examus2_after_require_login() {
-    global $USER, $DB, $CFG;
+    global $USER, $DB;
 
     // User is trying to start an attempt, redirect to examus2 if it is not started.
-    $scriptname = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : null;
-    $rootPath = parse_url($CFG->wwwroot,PHP_URL_PATH);
-    if ($scriptname == $rootPath . '/mod/quiz/startattempt.php' || $scriptname == $rootPath . 'mod/quiz/startattempt.php') {
+    if (isset($_SERVER['SCRIPT_NAME']) && preg_match('/mod\/quiz\/startattempt\.php$/', $_SERVER['SCRIPT_NAME'])) {
         $cmid = required_param('cmid', PARAM_INT); // Course module id.
 
         if (!$cm = get_coursemodule_from_id('quiz', $cmid)) {
