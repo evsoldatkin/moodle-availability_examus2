@@ -232,3 +232,31 @@ function availability_examus2_attempt_viewed_handler($event) {
         'quiz_id' => $quiz->id,
     ];
 }
+
+/**
+ * User updated
+ *
+ * @param \core\event\user_updated $event Event
+ */
+function availability_examus2_user_updated(\core\event\user_updated $event) {
+    $userdata = profile_user_record($event->objectid);
+    if (isset($userdata->hash_snils) && $userdata->hash_snils && strpos($userdata->hash_snils, 'pbkdf2') !== 0)
+    {
+        $snils = preg_replace('/[^\d]/', '', $userdata->hash_snils);
+        if (strlen($snils) !== 11) {
+            return;
+        }
+        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $length = strlen($characters);
+        $salt = '';
+        for ($i = 0; $i < 16; $i++) {
+            $salt .= $characters[random_int(0, $length - 1)];
+        }
+        $iterations = 870000;
+        $hash = base64_encode(hash_pbkdf2('sha256', $snils, $salt, $iterations, 0, true));
+        $data = new stdClass();
+        $data->id = $event->objectid;
+        $data->profile_field_hash_snils = 'pbkdf2_sha256$'.$iterations.'$'.$salt.'$'.$hash;
+        profile_save_data($data);
+    }
+}

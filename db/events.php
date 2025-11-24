@@ -38,6 +38,12 @@ $observers = [
         'internal' => false,
     ],
     [
+        'eventname' => 'core\event\user_updated',
+        'callback' => 'availability_examus2_user_updated',
+        'includefile' => '/availability/condition/examus2/locallib.php',
+        'internal' => false,
+    ],
+    [
         'eventname' => 'mod_quiz\event\attempt_submitted',
         'callback' => 'availability_examus2_attempt_submitted_handler',
         'includefile' => '/availability/condition/examus2/locallib.php',
