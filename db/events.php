@@ -38,6 +38,12 @@ $observers = [
         'internal' => false,
     ],
     [
+        'eventname' => 'core\event\user_created',
+        'callback' => 'availability_examus2_user_created',
+        'includefile' => '/availability/condition/examus2/locallib.php',
+        'internal' => false,
+    ],
+    [
         'eventname' => 'core\event\user_updated',
         'callback' => 'availability_examus2_user_updated',
         'includefile' => '/availability/condition/examus2/locallib.php',

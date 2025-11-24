@@ -233,13 +233,8 @@ function availability_examus2_attempt_viewed_handler($event) {
     ];
 }
 
-/**
- * User updated
- *
- * @param \core\event\user_updated $event Event
- */
-function availability_examus2_user_updated(\core\event\user_updated $event) {
-    $userdata = profile_user_record($event->objectid);
+function availability_examus2_hash_snils($userid) {
+    $userdata = profile_user_record($userid);
     if (isset($userdata->hash_snils) && $userdata->hash_snils && strpos($userdata->hash_snils, 'pbkdf2') !== 0)
     {
         $snils = preg_replace('/[^\d]/', '', $userdata->hash_snils);
@@ -255,8 +250,26 @@ function availability_examus2_user_updated(\core\event\user_updated $event) {
         $iterations = 870000;
         $hash = base64_encode(hash_pbkdf2('sha256', $snils, $salt, $iterations, 0, true));
         $data = new stdClass();
-        $data->id = $event->objectid;
+        $data->id = $userid;
         $data->profile_field_hash_snils = 'pbkdf2_sha256$'.$iterations.'$'.$salt.'$'.$hash;
         profile_save_data($data);
     }
+}
+
+/**
+ * User created
+ *
+ * @param \core\event\user_created $event Event
+ */
+function availability_examus2_user_created($event) {
+    availability_examus2_hash_snils($event->objectid);
+}
+
+/**
+ * User updated
+ *
+ * @param \core\event\user_updated $event Event
+ */
+function availability_examus2_user_updated($event) {
+    availability_examus2_hash_snils($event->objectid);
 }
