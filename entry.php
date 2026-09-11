@@ -38,6 +38,17 @@ if ($token) {
     core_user::require_active_user($user, true, true);
 
     complete_user_login($user);
+
+    if (session_id()) {
+        setcookie('MoodleSession'.($CFG->sessioncookie ?? ''), session_id(), [
+            'expires'  => 0,
+            'path'     => $CFG->sessioncookiepath ?? '/',
+            'domain'   => $CFG->sessioncookiedomain ?? '',
+            'secure'   => true,
+            'httponly' => $CFG->cookiehttponly ?? true,
+            'samesite' => 'None'
+        ]);
+    }
 }
 
 \availability_examus2\utils::handle_accesscode_param($accesscode);
